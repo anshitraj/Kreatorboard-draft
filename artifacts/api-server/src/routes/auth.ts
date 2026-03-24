@@ -1,12 +1,9 @@
-import { Router, type IRouter } from "express";
+import { Router, type IRouter, type Request, type Response } from "express";
 import { requireAuth, type AuthenticatedRequest } from "../lib/auth";
-import { db } from "@workspace/db";
-import { usersTable } from "@workspace/db/schema";
-import { eq } from "drizzle-orm";
 
 const router: IRouter = Router();
 
-router.get("/me", requireAuth, async (req: AuthenticatedRequest, res) => {
+router.get("/me", requireAuth, async (req: AuthenticatedRequest, res: Response) => {
   const user = req.user!;
   res.json({
     id: user.id,
@@ -20,7 +17,7 @@ router.get("/me", requireAuth, async (req: AuthenticatedRequest, res) => {
   });
 });
 
-router.post("/logout", (_req, res) => {
+router.post("/logout", async (req: Request, res: Response) => {
   res.json({ message: "Logged out successfully" });
 });
 

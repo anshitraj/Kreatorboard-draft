@@ -20,6 +20,11 @@ export async function requireAuth(
   res: Response,
   next: NextFunction
 ) {
+  if (req.user) {
+    next();
+    return;
+  }
+
   const replitUserId = req.headers["x-replit-user-id"] as string | undefined;
   const replitUserName = req.headers["x-replit-user-name"] as string | undefined;
 
@@ -69,7 +74,7 @@ export async function requireAuth(
     };
     next();
   } catch (err) {
-    req.log.error({ err }, "Auth middleware error");
+    req.log?.error({ err }, "Auth middleware error");
     res.status(500).json({ error: "Internal server error" });
   }
 }
