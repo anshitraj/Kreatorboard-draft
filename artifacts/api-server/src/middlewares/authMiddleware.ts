@@ -1,21 +1,21 @@
 import { type Request, type Response, type NextFunction } from "express";
-import {
-  clearSession,
-  getSessionId,
-  getSession,
-  type SessionData,
-} from "../lib/oidc-auth";
+import { getSessionId, getSession } from "../lib/oidc-auth";
 
 declare global {
   namespace Express {
-    interface Request {
-      isAuthenticated(): this is AuthenticatedRequest;
-      sessionId?: string;
-      sessionData?: SessionData;
+    interface User {
+      id: string;
+      email: string;
+      name: string | null;
+      role: string;
+      onboardingStep: number;
+      onboardingComplete: boolean;
+      replitUserId: string | null;
     }
 
-    interface AuthenticatedRequest extends Request {
-      user: NonNullable<Request["user"]>;
+    interface Request {
+      user?: User;
+      isAuthenticated(): this is Request & { user: User };
     }
   }
 }
@@ -41,8 +41,6 @@ export async function authMiddleware(
     return;
   }
 
-  req.sessionId = sid;
-  req.sessionData = session;
   req.user = {
     id: session.userId,
     email: session.email,
@@ -51,7 +49,7 @@ export async function authMiddleware(
     onboardingStep: session.onboardingStep,
     onboardingComplete: session.onboardingComplete,
     replitUserId: session.replitUserId,
-  } as any;
+  };
 
   next();
 }

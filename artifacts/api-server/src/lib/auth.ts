@@ -3,20 +3,8 @@ import { db } from "@workspace/db";
 import { usersTable } from "@workspace/db/schema";
 import { eq } from "drizzle-orm";
 
-export interface AuthenticatedRequest extends Request {
-  user?: {
-    id: string;
-    email: string;
-    name: string | null;
-    role: string;
-    onboardingStep: number;
-    onboardingComplete: boolean;
-    replitUserId: string | null;
-  };
-}
-
 export async function requireAuth(
-  req: AuthenticatedRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ) {
@@ -80,11 +68,15 @@ export async function requireAuth(
 }
 
 export function requireRole(...roles: string[]) {
-  return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+  return (req: Request, res: Response, next: NextFunction) => {
     if (!req.user || !roles.includes(req.user.role)) {
       res.status(403).json({ error: "Forbidden", message: "Insufficient permissions" });
       return;
     }
     next();
   };
+}
+
+export interface AuthenticatedRequest extends Request {
+  user: Express.User;
 }

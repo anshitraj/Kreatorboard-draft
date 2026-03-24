@@ -1,8 +1,7 @@
 import * as oidcClient from "openid-client";
 import crypto from "crypto";
 import { type Request, type Response } from "express";
-import { db } from "@workspace/db";
-import { sessionsTable } from "@workspace/db/schema";
+import { db, sessionsTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
 
 export const ISSUER_URL = process.env.ISSUER_URL ?? "https://replit.com/oidc";
