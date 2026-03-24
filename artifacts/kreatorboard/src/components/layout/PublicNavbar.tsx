@@ -29,7 +29,7 @@ export function PublicNavbar() {
               </a>
               <Link href="/discover" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5">
                 <Compass className="w-3.5 h-3.5" />
-                Discover
+                Discover Creators
               </Link>
             </nav>
           </div>

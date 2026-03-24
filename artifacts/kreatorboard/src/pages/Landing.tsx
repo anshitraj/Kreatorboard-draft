@@ -241,7 +241,7 @@ export default function Landing() {
               </div>
               <div>
                 <p className="text-[10px] text-muted-foreground">Payment Received</p>
-                <p className="text-sm font-bold text-green-400">+5,000 USDC</p>
+                <p className="text-sm font-bold text-green-400">+500 USDC</p>
               </div>
             </motion.div>
 
