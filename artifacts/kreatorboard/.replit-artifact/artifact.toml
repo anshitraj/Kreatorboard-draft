@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Kreatorboard"
+version = "1.0.0"
+id = "artifacts/kreatorboard"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 19551
+
+[services.development]
+run = "pnpm --filter @workspace/kreatorboard run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/kreatorboard", "run", "build" ]
+publicDir = "artifacts/kreatorboard/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "19551"
+BASE_PATH = "/"

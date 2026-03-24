@@ -1,0 +1,706 @@
+You are the principal engineer, staff product architect, and production hardening lead for Kreatorboard.
+
+Your task is to upgrade the existing Kreatorboard application into a production-grade, automation-first creator operating system.
+
+The current issue:
+- the application is built
+- but too much is manual
+- dashboard creation is not automatic
+- social connection flow is weak
+- wallet connection is incomplete
+- the app has limited functionality
+- the app must become faster, more reliable, more automated, and more production-ready
+- database should use Neon Postgres
+- wallet connection should use WalletConnect / Reown AppKit
+- the application must remain realistic on a near-zero budget
+- no fake analytics
+- no demo data
+- no hallucinated metrics
+- no pretending unsupported APIs work
+- no expensive scraping infrastructure
+- prefer official APIs, OAuth, bots, webhooks, and open-source tools
+
+==================================================
+1. CORE OBJECTIVE
+==================================================
+
+Convert Kreatorboard from a mostly manual dashboard into an automation-first platform where:
+
+1. a creator signs up
+2. connects social accounts and productivity tools
+3. the platform automatically creates their dashboard
+4. background sync jobs fetch available data
+5. the user gets a real public profile + private workspace without manually filling everything
+6. the app remains fast and scalable on Neon + Next.js
+
+The app should feel like:
+- creator operating system
+- blockchain creator CRM
+- media kit + analytics + monetization + inbox + scheduling + payouts
+- not a basic admin panel
+
+==================================================
+2. MANDATORY PRODUCT DIRECTION
+==================================================
+
+Kreatorboard is for blockchain-native creators and micro-influencers.
+
+It must support:
+- public creator page
+- private dashboard
+- automatic profile enrichment
+- collaboration inbox
+- social account management
+- wallet connection
+- Arc-compatible payment requests and payouts
+- email and calendar management
+- scheduling
+- analytics snapshots
+- creator monetization tools
+- discovery by founders/builders
+- admin controls
+
+The system must be built so that most of the dashboard is generated from connected sources, not manual typing.
+
+==================================================
+3. BIG PRODUCT SHIFT: AUTOMATION-FIRST ONBOARDING
+==================================================
+
+Rebuild onboarding so it is no longer “fill 20 fields manually”.
+
+New onboarding flow:
+
+STEP 1: account creation
+- email auth or Google auth
+- optional wallet connect during onboarding
+- assign role = creator by default
+
+STEP 2: choose creator handle and profile visibility
+- reserve unique handle
+- choose public/private defaults
+
+STEP 3: connect accounts
+Allow the creator to connect:
+- Gmail
+- Google Calendar
+- Cal.com booking link
+- Telegram
+- Discord
+- X/Twitter (limited mode unless credentials configured)
+- Wallet (via WalletConnect / Reown AppKit)
+- website / blog / Linktree import
+- manual fallback sources only where required
+
+STEP 4: automatic dashboard generation
+Immediately after integrations are connected:
+- create creator profile shell
+- pull available identity data
+- infer display name
+- infer avatar/banner from allowed sources
+- infer external links
+- infer timezone
+- infer service categories from bio / imported text
+- infer niches / tags
+- create first analytics snapshot
+- create first social summary cards
+- create first inbox labels
+- create first calendar summary
+- create first public profile draft
+- create first media kit draft
+- create initial AI-generated but editable profile summary based ONLY on fetched real data
+
+STEP 5: review and publish
+- show generated profile draft
+- let creator edit
+- let creator choose which metrics are public
+- publish public page
+
+==================================================
+4. SOCIAL CONNECT SECTION: REBUILD COMPLETELY
+==================================================
+
+Build a first-class “Connect Socials & Tools” section.
+
+This is a critical module, not a settings afterthought.
+
+Create a dedicated route:
+- /dashboard/integrations
+
+This page must include:
+- integration cards
+- connect / reconnect / disconnect
+- status badges
+- data freshness
+- available scopes
+- last sync time
+- sync now button with cooldown
+- error state
+- action-required state
+- limited mode state
+
+Required integration cards:
+- Gmail
+- Google Calendar
+- Cal.com
+- Telegram
+- Discord
+- X / Twitter
+- Wallet
+- Website / RSS / Blog
+- Custom Links
+
+Each card must show:
+- connection status
+- what data is imported
+- what actions are supported
+- whether it uses webhook sync or scheduled sync
+- whether data is exact or estimated
+- limits / caveats
+
+==================================================
+5. OFFICIAL / OPEN-SOURCE AUTOMATION STRATEGY
+==================================================
+
+Do NOT use sketchy scraping as the core architecture.
+
+Use official integrations and open-source tools where possible.
+
+Implement per provider:
+
+A. Gmail
+- OAuth connect
+- fetch labels, threads, selected metadata, sent mail capability
+- collaboration inbox views
+- use push notifications / watch architecture where appropriate
+- sync only required labels to reduce quota use
+- maintain thread mapping in DB
+- allow smart lead classification
+- never fetch entire mailbox unnecessarily
+
+B. Google Calendar
+- OAuth connect
+- read events
+- create scheduling / availability events
+- use watch channels / push style architecture where possible
+- sync upcoming windows and booked calls
+- show next meetings in dashboard
+
+C. Cal.com
+- allow manual booking link mode
+- if API credentials exist, sync booking metadata
+- otherwise do not fake deep integration
+- still support embed and profile CTA
+
+D. Telegram
+- support Telegram login / auth-compatible flows where relevant
+- support Telegram bot-based integration
+- allow creator to connect public channel / group / bot
+- store Telegram handles and linked channels
+- ingest accessible metadata from bot-authorized surfaces
+- support Telegram Mini App compatible surface if useful later
+- show real limitations if bot lacks permissions
+
+E. Discord
+- use OAuth2 for identity and allowed guild data
+- support bot install flow where needed
+- support webhook/event-driven sync where appropriate
+- map accessible guild/community metadata
+- do not overpoll
+- respect rate limits
+- use cached summaries and deltas
+
+F. X / Twitter
+- architect for 3 modes:
+  1. BYO API credentials mode
+  2. manual CSV import mode
+  3. public profile link mode
+- do not assume free deep analytics access
+- do not make X required for the product to work
+- never claim exact X metrics if not actually fetched from authorized sources
+- show “limited mode” clearly
+
+G. Wallet
+- use WalletConnect / Reown AppKit
+- support EVM wallet connection first
+- architecture should allow Solana later
+- store connected wallet(s)
+- support SIWE-style auth or wallet linking if appropriate
+- use wallet as identity + payout destination + proof layer
+
+H. Website / blog / portfolio
+- allow importing from website metadata, RSS feeds, or provided URLs
+- extract title, description, social links, featured content links
+- create portfolio blocks automatically
+
+==================================================
+6. FAST DASHBOARD GENERATION ENGINE
+==================================================
+
+Implement a dashboard generation pipeline.
+
+When the user connects integrations, run:
+- createCreatorWorkspace()
+- queueInitialImportJobs()
+- generateProfileDraft()
+- generateMediaKitDraft()
+- generateAnalyticsCards()
+- generateInboxViews()
+- generateCalendarSummary()
+- generateSocialSummary()
+- generateCollaborationPipeline()
+
+Build this as a real orchestration layer, not scattered side effects.
+
+Suggested architecture:
+- Integration Connect Handler
+- Credential Store
+- Provider Adapters
+- Sync Orchestrator
+- Import Jobs
+- Snapshot Builders
+- Profile Enrichment Service
+- Public Profile Generator
+- AI Explanation Layer
+- Notifications Service
+
+==================================================
+7. AUTOMATICALLY GENERATED DASHBOARD CONTENT
+==================================================
+
+After connect, the dashboard should automatically show:
+
+OVERVIEW
+- connected platforms
+- follower/connection summary where available
+- active integrations
+- next calendar events
+- inbox summary
+- pending collaboration requests
+- payout summary
+- profile completeness
+- public page status
+- sync health
+
+SOCIAL SUMMARY
+- all connected handles
+- platform cards
+- imported profile links
+- imported bios where available
+- platform status
+- latest snapshot time
+
+ANALYTICS
+- exact metrics only when exact data is available
+- estimated metrics only when clearly marked estimated
+- growth trend from snapshots
+- content/activity snapshots
+- audience health signals
+- suspicious growth/event detection
+- public vs private metric controls
+
+PORTFOLIO
+- imported links
+- featured posts / threads / articles / videos
+- services
+- niches
+- ecosystems
+- languages
+- location
+- creator summary
+- collaboration CTA
+
+INBOX
+- Gmail threads
+- collaboration leads
+- pitch templates
+- notes
+- follow-up reminders
+
+CALENDAR
+- bookings
+- events
+- availability
+- cal.com link
+- meeting reminders
+
+PAYMENTS
+- connected wallet
+- payout destination
+- Arc payment requests
+- invoice-style links
+- payout history
+
+==================================================
+8. ADD MORE PRODUCT FUNCTIONALITY
+==================================================
+
+Expand the app beyond basic profile + stats.
+
+Add these modules if missing:
+
+1. Public profile builder
+- drag-and-drop sections
+- social links
+- featured work
+- services
+- testimonials
+- creator niches
+- CTA buttons
+- calendar CTA
+- payment CTA
+- founder/builder collaboration CTA
+
+2. Media kit generator
+- one-click public media kit page
+- downloadable PDF generation from real profile data
+- shareable link
+- no fake numbers
+
+3. Collaboration CRM
+- request pipeline
+- lead labels
+- notes
+- attachments
+- email thread association
+- deliverables and deadlines
+- won/lost states
+
+4. Creator opportunity inbox
+- incoming founder requests
+- builder requests
+- campaign invites
+- archive / reply / accept / reject
+
+5. Monetization center
+- services list
+- custom packages
+- payment links
+- payout wallet
+- invoice requests
+- paid consultation booking link
+
+6. Automation center
+- sync schedules
+- smart alerts
+- inbox follow-up reminders
+- stale integration alerts
+- profile completeness reminders
+- weekly summary digests
+
+7. Discovery surface
+- founders/builders can browse public creators
+- filters by niche, chain, language, region, platform, follower bands, availability
+- request collaboration directly
+
+8. Admin panel
+- users
+- creators
+- sync jobs
+- integration health
+- flagged accounts
+- manual retries
+- audit logs
+
+==================================================
+9. PERFORMANCE + SPEED REQUIREMENTS
+==================================================
+
+The application must become fast.
+
+Use:
+- Next.js App Router
+- server components where appropriate
+- route-level loading states
+- streaming UI where useful
+- Neon Postgres
+- efficient indexes
+- cached snapshots
+- batched writes
+- optimistic UI where safe
+- lazy loading for heavy dashboard modules
+- pagination everywhere relevant
+- no waterfall fetching
+- no N+1 query mess
+
+Neon requirements:
+- use Neon as the primary Postgres database
+- configure for production-ready connection handling
+- choose the correct driver pattern for Next.js runtime
+- build a db access layer with typed queries
+- use migration tooling properly
+- index all high-frequency lookup fields
+- add composite indexes where needed
+- keep analytics snapshot queries fast
+- build connection-safe patterns for serverless workloads
+
+==================================================
+10. DATABASE AND DATA MODEL
+==================================================
+
+Use Neon Postgres and define/upgrade schema to support automation-first architecture.
+
+Required entities:
+- User
+- CreatorProfile
+- CreatorPublicPage
+- CreatorMetricSnapshot
+- CreatorAudienceSignal
+- CreatorService
+- CreatorPortfolioItem
+- CreatorTestimonial
+- SocialConnection
+- IntegrationCredential
+- SyncJob
+- SyncRun
+- SyncCursor
+- ImportedIdentityField
+- CollaborationRequest
+- CollaborationThread
+- CollaborationNote
+- Lead
+- EmailThread
+- EmailMessage
+- CalendarConnection
+- CalendarEvent
+- BookingLink
+- WalletConnection
+- PaymentRequest
+- PaymentTransaction
+- Notification
+- Task
+- AuditLog
+- FeatureFlag
+- ProviderHealthEvent
+- AdminAction
+
+Important:
+- store raw provider payloads only when needed
+- normalize all important application-level fields
+- track data provenance
+- track confidence level
+- track exact vs estimated
+- track last synced timestamps per field/provider
+
+==================================================
+11. WALLET CONNECTION: USE WALLETCONNECT / REOWN APPKIT
+==================================================
+
+Implement proper wallet connection.
+
+Requirements:
+- use Reown AppKit / WalletConnect-based integration
+- support EVM first
+- prepare architecture for future Solana support
+- clean wallet modal UX
+- connect / disconnect / relink
+- display connected address
+- ENS/name resolution if available
+- choose primary payout wallet
+- verify ownership by signature
+- store wallet metadata safely
+- support wallet link in onboarding and settings
+- use wallet in payments section
+- use wallet in public profile if user opts in
+
+Do not build a fake wallet UI.
+Do not store private keys.
+Do not invent balances.
+
+==================================================
+12. PAYMENTS
+==================================================
+
+Build wallet-aware creator payment flows.
+
+Support:
+- create payment request
+- stablecoin payment request on Arc-compatible flow
+- copy payment link
+- mark paid when confirmed through real logic
+- allow manual external payment logging with explicit labeling
+- payout destination selection
+- service-based checkout request generation
+
+Do not fake settlement.
+If chain integration is partial, keep the UI honest.
+
+==================================================
+13. BACKGROUND JOB SYSTEM
+==================================================
+
+Build a robust lightweight sync/job architecture.
+
+Use:
+- queue table in Postgres or lightweight worker-friendly job system
+- job types per provider
+- retry policy
+- exponential backoff
+- dead-letter state
+- provider-specific throttling
+- user-triggered refresh cooldowns
+- webhook-first sync where supported
+- scheduled pull only when necessary
+
+Job categories:
+- initial import
+- incremental sync
+- profile enrichment
+- analytics snapshot build
+- media kit generation
+- email classification
+- stale integration check
+- public profile revalidation
+
+==================================================
+14. RATE LIMIT AND QUOTA SAFETY
+==================================================
+
+This app must survive on free/low-cost usage.
+
+Implement:
+- provider adapters with rate-limit awareness
+- backoff + jitter
+- request deduplication
+- sync windows
+- delta imports
+- cached provider responses where safe
+- no repeated full fetches
+- hard limits per user per day for expensive operations
+- admin observability for sync failures
+
+Do not:
+- sync all providers on every dashboard view
+- retry aggressively
+- mask quota errors
+
+==================================================
+15. UI / UX REQUIREMENTS
+==================================================
+
+Keep the UI premium, not generic.
+
+Style direction:
+- not a plain white/black starter template
+- more polished fintech / premium SaaS
+- rich dark surfaces
+- refined gradients used sparingly
+- strong typography
+- modern charts
+- subtle glow and depth
+- card hierarchy
+- excellent responsive behavior
+- Dodo Payments level inspiration in polish, not copy
+
+Also:
+- integrations page must feel first-class
+- onboarding must feel magical but real
+- empty states must explain what to connect next
+- every metric card must show source and freshness
+- estimated metrics must have tooltips and explanations
+
+==================================================
+16. SECURITY
+==================================================
+
+Implement:
+- encrypted storage for OAuth/provider secrets
+- secure session handling
+- RBAC
+- CSRF-safe mutation handling where required
+- signed webhooks
+- provider token refresh logic
+- audit logs for admin actions
+- no secrets exposed to client
+- strict validation on all API routes and server actions
+
+==================================================
+17. DOCUMENTATION: GENERATE REAL DOCS
+==================================================
+
+Create/update:
+- README.md
+- PRODUCT_OVERVIEW.md
+- AUTOMATION_ARCHITECTURE.md
+- INTEGRATIONS.md
+- WALLET_CONNECTION.md
+- NEON_SETUP.md
+- DATABASE_SCHEMA.md
+- RATE_LIMITING.md
+- SECURITY.md
+- DEPLOYMENT.md
+- ENVIRONMENT_VARIABLES.md
+- KNOWN_LIMITATIONS.md
+
+These docs must clearly explain:
+- what is fully automated
+- what is semi-automated
+- which providers use official APIs
+- which providers use bot/webhook modes
+- where X is limited
+- how wallet connect works
+- how Neon is configured
+- what is exact vs estimated data
+
+==================================================
+18. WHAT MUST BE TRUE AFTER IMPLEMENTATION
+==================================================
+
+After this upgrade, a creator should be able to:
+
+- sign up
+- connect Gmail, Calendar, Telegram, Discord, wallet, and optional X mode
+- automatically generate a dashboard
+- automatically generate a public profile draft
+- see imported links and profile data
+- receive collaboration requests
+- manage inbox and calendar
+- set payout wallet
+- create payment requests
+- publish a public creator page
+- share that page with founders/builders
+- manage everything from one operating system
+
+And the system should be:
+- fast
+- production-ready
+- honest
+- integration-first
+- automation-first
+- scalable to the first 100+ creators without expensive infrastructure
+
+==================================================
+19. IMPLEMENTATION ORDER
+==================================================
+
+Do this in order:
+
+1. inspect existing codebase
+2. preserve useful UI and working modules
+3. remove fake/manual-only dead paths where needed
+4. migrate to or clean up Neon DB integration
+5. rebuild integrations page
+6. rebuild onboarding for automatic dashboard generation
+7. implement provider adapters
+8. implement sync/job orchestration
+9. implement wallet connection with Reown AppKit / WalletConnect
+10. implement public profile generation
+11. implement collaboration + inbox + calendar + payment flows
+12. add admin observability
+13. add docs
+14. run final production hardening pass
+
+==================================================
+20. NON-NEGOTIABLE RULES
+==================================================
+
+- no demo data
+- no hallucinated metrics
+- no fake AI
+- no pretending unsupported API access exists
+- no overreliance on paid X APIs
+- no heavy scraping backbone
+- no breaking existing good code unnecessarily
+- no shipping weak placeholder modules
+- no generic dashboard feel
+
+Start by auditing the existing repository and then implement this production-grade upgrade.

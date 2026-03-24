@@ -1,0 +1,20 @@
+packages:
+  "framer-motion": "For premium page transitions and staggered list animations"
+  "recharts": "For the analytics and social metrics charts on the dashboard"
+  "date-fns": "For formatting dates in the calendar, inbox, and sync jobs"
+  "react-day-picker": "Required for Shadcn calendar components"
+
+images:
+  - path: "artifacts/kreatorboard/public/images/hero-bg.png"
+    description: "Dark, premium 3D abstract web3 mesh background with deep purple and electric cyan glows, perfectly suited for a high-end fintech or crypto creator platform hero section"
+    aspect_ratio: "16:9"
+  - path: "artifacts/kreatorboard/public/images/avatar-placeholder.png"
+    description: "A sleek, minimal default avatar placeholder icon in a dark glassmorphism style with a faint purple glow"
+    aspect_ratio: "1:1"
+  - path: "artifacts/kreatorboard/public/images/wallet-connect.png"
+    description: "A highly polished, 3D glassmorphism illustration of a futuristic cryptocurrency wallet and a link icon, glowing with neon cyan and purple in a dark setting"
+    aspect_ratio: "1:1"
+
+notes:
+  - Expects generated React Query hooks from @workspace/api-client-react
+  - Uses Replit Auth for authentication flows

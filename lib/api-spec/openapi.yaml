@@ -1,22 +1,40 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Kreatorboard API - Creator Operating System
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: auth
+    description: Authentication
+  - name: profile
+    description: Creator profile management
+  - name: integrations
+    description: Social and tool integrations
+  - name: social
+    description: Social account management
+  - name: inbox
+    description: Collaboration inbox
+  - name: calendar
+    description: Calendar and scheduling
+  - name: payments
+    description: Payments and wallet
+  - name: discovery
+    description: Creator discovery
+  - name: sync
+    description: Background sync jobs
+  - name: admin
+    description: Admin panel
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +42,727 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Get current user
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [auth]
+      summary: Log out
+      responses:
+        "200":
+          description: Logged out
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /profile:
+    get:
+      operationId: getMyProfile
+      tags: [profile]
+      summary: Get my creator profile
+      responses:
+        "200":
+          description: Creator profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreatorProfile"
+        "404":
+          description: Profile not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      operationId: updateMyProfile
+      tags: [profile]
+      summary: Update my creator profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateProfileRequest"
+      responses:
+        "200":
+          description: Updated profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreatorProfile"
+
+  /profile/onboarding:
+    post:
+      operationId: completeOnboarding
+      tags: [profile]
+      summary: Complete onboarding step
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OnboardingStepRequest"
+      responses:
+        "200":
+          description: Onboarding updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OnboardingResponse"
+
+  /profile/generate-dashboard:
+    post:
+      operationId: generateDashboard
+      tags: [profile]
+      summary: Trigger automatic dashboard generation
+      responses:
+        "200":
+          description: Generation started
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /profile/public/{handle}:
+    get:
+      operationId: getPublicProfile
+      tags: [profile]
+      summary: Get public creator profile by handle
+      parameters:
+        - name: handle
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Public profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicCreatorProfile"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /profile/services:
+    get:
+      operationId: getMyServices
+      tags: [profile]
+      summary: Get my services list
+      responses:
+        "200":
+          description: Services
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CreatorService"
+    post:
+      operationId: createService
+      tags: [profile]
+      summary: Create a service
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateServiceRequest"
+      responses:
+        "201":
+          description: Created service
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreatorService"
+
+  /profile/services/{id}:
+    patch:
+      operationId: updateService
+      tags: [profile]
+      summary: Update a service
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateServiceRequest"
+      responses:
+        "200":
+          description: Updated service
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreatorService"
+    delete:
+      operationId: deleteService
+      tags: [profile]
+      summary: Delete a service
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /profile/portfolio:
+    get:
+      operationId: getMyPortfolio
+      tags: [profile]
+      summary: Get my portfolio items
+      responses:
+        "200":
+          description: Portfolio items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PortfolioItem"
+    post:
+      operationId: createPortfolioItem
+      tags: [profile]
+      summary: Create portfolio item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePortfolioItemRequest"
+      responses:
+        "201":
+          description: Created item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PortfolioItem"
+
+  /integrations:
+    get:
+      operationId: getMyIntegrations
+      tags: [integrations]
+      summary: Get all my integrations and their status
+      responses:
+        "200":
+          description: Integrations list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Integration"
+
+  /integrations/{provider}/connect:
+    post:
+      operationId: initiateIntegrationConnect
+      tags: [integrations]
+      summary: Start OAuth connection flow for a provider
+      parameters:
+        - name: provider
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [gmail, google_calendar, discord, telegram, twitter, cal_com, wallet, website]
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConnectIntegrationRequest"
+      responses:
+        "200":
+          description: Connection initiated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConnectResponse"
+
+  /integrations/{provider}/disconnect:
+    post:
+      operationId: disconnectIntegration
+      tags: [integrations]
+      summary: Disconnect an integration
+      parameters:
+        - name: provider
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Disconnected
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /integrations/{provider}/sync:
+    post:
+      operationId: triggerIntegrationSync
+      tags: [integrations]
+      summary: Trigger manual sync for a provider
+      parameters:
+        - name: provider
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Sync triggered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SyncJobResponse"
+
+  /integrations/wallet/connect:
+    post:
+      operationId: connectWallet
+      tags: [integrations]
+      summary: Connect and verify a wallet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConnectWalletRequest"
+      responses:
+        "200":
+          description: Wallet connected
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WalletConnection"
+
+  /integrations/wallet:
+    get:
+      operationId: getWallets
+      tags: [integrations]
+      summary: Get connected wallets
+      responses:
+        "200":
+          description: Wallets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WalletConnection"
+
+  /integrations/oauth/callback:
+    get:
+      operationId: oauthCallback
+      tags: [integrations]
+      summary: OAuth callback handler
+      parameters:
+        - name: code
+          in: query
+          schema:
+            type: string
+        - name: state
+          in: query
+          schema:
+            type: string
+        - name: error
+          in: query
+          schema:
+            type: string
+      responses:
+        "302":
+          description: Redirect after OAuth
+
+  /social:
+    get:
+      operationId: getMySocialAccounts
+      tags: [social]
+      summary: Get connected social accounts
+      responses:
+        "200":
+          description: Social accounts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SocialAccount"
+
+  /social/metrics:
+    get:
+      operationId: getSocialMetrics
+      tags: [social]
+      summary: Get social metrics snapshot
+      responses:
+        "200":
+          description: Metrics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SocialMetricsSnapshot"
+
+  /inbox:
+    get:
+      operationId: getInbox
+      tags: [inbox]
+      summary: Get collaboration inbox
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [new, in_progress, accepted, rejected, archived]
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Inbox items
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedCollaborations"
+
+  /inbox/{id}:
+    get:
+      operationId: getCollaboration
+      tags: [inbox]
+      summary: Get single collaboration request
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Collaboration
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CollaborationDetail"
+    patch:
+      operationId: updateCollaboration
+      tags: [inbox]
+      summary: Update collaboration status or notes
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCollaborationRequest"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CollaborationDetail"
+
+  /inbox/request:
+    post:
+      operationId: submitCollaborationRequest
+      tags: [inbox]
+      summary: Submit a collaboration request (from founder to creator)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubmitCollaborationRequest"
+      responses:
+        "201":
+          description: Request submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CollaborationDetail"
+
+  /calendar/events:
+    get:
+      operationId: getCalendarEvents
+      tags: [calendar]
+      summary: Get upcoming calendar events
+      parameters:
+        - name: from
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: to
+          in: query
+          schema:
+            type: string
+            format: date-time
+      responses:
+        "200":
+          description: Events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CalendarEvent"
+
+  /calendar/summary:
+    get:
+      operationId: getCalendarSummary
+      tags: [calendar]
+      summary: Get calendar summary for dashboard
+      responses:
+        "200":
+          description: Summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CalendarSummary"
+
+  /payments/wallets:
+    get:
+      operationId: getPaymentWallets
+      tags: [payments]
+      summary: Get wallets available for payment
+      responses:
+        "200":
+          description: Wallets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WalletConnection"
+
+  /payments/requests:
+    get:
+      operationId: getPaymentRequests
+      tags: [payments]
+      summary: Get all payment requests
+      responses:
+        "200":
+          description: Payment requests
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PaymentRequest"
+    post:
+      operationId: createPaymentRequest
+      tags: [payments]
+      summary: Create a payment request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePaymentRequestInput"
+      responses:
+        "201":
+          description: Created payment request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentRequest"
+
+  /payments/requests/{id}:
+    get:
+      operationId: getPaymentRequest
+      tags: [payments]
+      summary: Get a payment request
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Payment request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentRequest"
+    patch:
+      operationId: updatePaymentRequest
+      tags: [payments]
+      summary: Update payment request status
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePaymentRequestInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentRequest"
+
+  /discovery/creators:
+    get:
+      operationId: discoverCreators
+      tags: [discovery]
+      summary: Browse public creator profiles
+      parameters:
+        - name: niche
+          in: query
+          schema:
+            type: string
+        - name: chain
+          in: query
+          schema:
+            type: string
+        - name: language
+          in: query
+          schema:
+            type: string
+        - name: available
+          in: query
+          schema:
+            type: boolean
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Creators
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedPublicProfiles"
+
+  /sync/jobs:
+    get:
+      operationId: getSyncJobs
+      tags: [sync]
+      summary: Get sync job history
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Jobs
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedSyncJobs"
+
+  /admin/users:
+    get:
+      operationId: adminGetUsers
+      tags: [admin]
+      summary: Admin - list users
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Users
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedUsers"
+
+  /admin/sync-health:
+    get:
+      operationId: adminGetSyncHealth
+      tags: [admin]
+      summary: Admin - sync health overview
+      responses:
+        "200":
+          description: Sync health
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SyncHealthOverview"
+
+  /admin/integrations:
+    get:
+      operationId: adminGetIntegrations
+      tags: [admin]
+      summary: Admin - all integration statuses
+      responses:
+        "200":
+          description: Integrations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminIntegrationRecord"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +773,1068 @@ components:
       required:
         - status
 
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+      required:
+        - error
+
+    MessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        name:
+          type: string
+        avatarUrl:
+          type: string
+          nullable: true
+        role:
+          type: string
+          enum: [creator, admin, founder]
+        onboardingStep:
+          type: integer
+        onboardingComplete:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - email
+        - role
+        - onboardingStep
+        - onboardingComplete
+        - createdAt
+
+    CreatorProfile:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        handle:
+          type: string
+        displayName:
+          type: string
+          nullable: true
+        bio:
+          type: string
+          nullable: true
+        avatarUrl:
+          type: string
+          nullable: true
+        bannerUrl:
+          type: string
+          nullable: true
+        location:
+          type: string
+          nullable: true
+        timezone:
+          type: string
+          nullable: true
+        website:
+          type: string
+          nullable: true
+        niches:
+          type: array
+          items:
+            type: string
+        ecosystems:
+          type: array
+          items:
+            type: string
+        languages:
+          type: array
+          items:
+            type: string
+        isPublic:
+          type: boolean
+        profileCompleteness:
+          type: integer
+        calComLink:
+          type: string
+          nullable: true
+        linktreeUrl:
+          type: string
+          nullable: true
+        twitterHandle:
+          type: string
+          nullable: true
+        discordHandle:
+          type: string
+          nullable: true
+        telegramHandle:
+          type: string
+          nullable: true
+        openToCollaboration:
+          type: boolean
+        mediaKitUrl:
+          type: string
+          nullable: true
+        publicPageUrl:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - userId
+        - handle
+        - isPublic
+        - openToCollaboration
+        - profileCompleteness
+        - niches
+        - ecosystems
+        - languages
+        - createdAt
+        - updatedAt
+
+    PublicCreatorProfile:
+      type: object
+      properties:
+        handle:
+          type: string
+        displayName:
+          type: string
+          nullable: true
+        bio:
+          type: string
+          nullable: true
+        avatarUrl:
+          type: string
+          nullable: true
+        bannerUrl:
+          type: string
+          nullable: true
+        location:
+          type: string
+          nullable: true
+        niches:
+          type: array
+          items:
+            type: string
+        ecosystems:
+          type: array
+          items:
+            type: string
+        languages:
+          type: array
+          items:
+            type: string
+        website:
+          type: string
+          nullable: true
+        calComLink:
+          type: string
+          nullable: true
+        socialLinks:
+          type: array
+          items:
+            $ref: "#/components/schemas/SocialLink"
+        services:
+          type: array
+          items:
+            $ref: "#/components/schemas/CreatorService"
+        portfolio:
+          type: array
+          items:
+            $ref: "#/components/schemas/PortfolioItem"
+        openToCollaboration:
+          type: boolean
+        connectedWalletAddress:
+          type: string
+          nullable: true
+      required:
+        - handle
+        - niches
+        - ecosystems
+        - languages
+        - socialLinks
+        - services
+        - portfolio
+        - openToCollaboration
+
+    SocialLink:
+      type: object
+      properties:
+        platform:
+          type: string
+        url:
+          type: string
+        handle:
+          type: string
+          nullable: true
+      required:
+        - platform
+        - url
+
+    UpdateProfileRequest:
+      type: object
+      properties:
+        displayName:
+          type: string
+        bio:
+          type: string
+        location:
+          type: string
+        timezone:
+          type: string
+        website:
+          type: string
+        niches:
+          type: array
+          items:
+            type: string
+        ecosystems:
+          type: array
+          items:
+            type: string
+        languages:
+          type: array
+          items:
+            type: string
+        isPublic:
+          type: boolean
+        calComLink:
+          type: string
+        linktreeUrl:
+          type: string
+        openToCollaboration:
+          type: boolean
+
+    OnboardingStepRequest:
+      type: object
+      properties:
+        step:
+          type: integer
+        data:
+          type: object
+          additionalProperties: true
+      required:
+        - step
+
+    OnboardingResponse:
+      type: object
+      properties:
+        currentStep:
+          type: integer
+        complete:
+          type: boolean
+        nextAction:
+          type: string
+          nullable: true
+      required:
+        - currentStep
+        - complete
+
+    CreatorService:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        price:
+          type: string
+          nullable: true
+        currency:
+          type: string
+          nullable: true
+        deliveryTime:
+          type: string
+          nullable: true
+        isActive:
+          type: boolean
+        category:
+          type: string
+          nullable: true
+      required:
+        - id
+        - title
+        - isActive
+
+    CreateServiceRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        price:
+          type: string
+        currency:
+          type: string
+        deliveryTime:
+          type: string
+        category:
+          type: string
+        isActive:
+          type: boolean
+      required:
+        - title
+
+    PortfolioItem:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        url:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        imageUrl:
+          type: string
+          nullable: true
+        platform:
+          type: string
+          nullable: true
+        featured:
+          type: boolean
+        sortOrder:
+          type: integer
+      required:
+        - id
+        - title
+        - featured
+        - sortOrder
+
+    CreatePortfolioItemRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        url:
+          type: string
+        description:
+          type: string
+        imageUrl:
+          type: string
+        platform:
+          type: string
+        featured:
+          type: boolean
+      required:
+        - title
+
+    Integration:
+      type: object
+      properties:
+        provider:
+          type: string
+        status:
+          type: string
+          enum: [connected, disconnected, error, limited, action_required]
+        displayName:
+          type: string
+        description:
+          type: string
+        lastSyncAt:
+          type: string
+          format: date-time
+          nullable: true
+        dataFreshness:
+          type: string
+          nullable: true
+        syncMode:
+          type: string
+          enum: [webhook, scheduled, manual, none]
+        availableData:
+          type: array
+          items:
+            type: string
+        limitations:
+          type: array
+          items:
+            type: string
+        scopes:
+          type: array
+          items:
+            type: string
+        errorMessage:
+          type: string
+          nullable: true
+        cooldownUntil:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+        - provider
+        - status
+        - displayName
+        - description
+        - syncMode
+        - availableData
+        - limitations
+        - scopes
+
+    ConnectIntegrationRequest:
+      type: object
+      properties:
+        redirectUrl:
+          type: string
+        metadata:
+          type: object
+          additionalProperties: true
+
+    ConnectResponse:
+      type: object
+      properties:
+        authUrl:
+          type: string
+          nullable: true
+        message:
+          type: string
+        requiresRedirect:
+          type: boolean
+      required:
+        - message
+        - requiresRedirect
+
+    ConnectWalletRequest:
+      type: object
+      properties:
+        address:
+          type: string
+        chainId:
+          type: integer
+        signature:
+          type: string
+        message:
+          type: string
+        isPrimary:
+          type: boolean
+        label:
+          type: string
+          nullable: true
+      required:
+        - address
+        - chainId
+        - signature
+        - message
+
+    WalletConnection:
+      type: object
+      properties:
+        id:
+          type: string
+        address:
+          type: string
+        chainId:
+          type: integer
+        chainName:
+          type: string
+        ensName:
+          type: string
+          nullable: true
+        isPrimary:
+          type: boolean
+        label:
+          type: string
+          nullable: true
+        verified:
+          type: boolean
+        connectedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - address
+        - chainId
+        - chainName
+        - isPrimary
+        - verified
+        - connectedAt
+
+    SyncJobResponse:
+      type: object
+      properties:
+        jobId:
+          type: string
+        status:
+          type: string
+        message:
+          type: string
+      required:
+        - jobId
+        - status
+        - message
+
+    SocialAccount:
+      type: object
+      properties:
+        id:
+          type: string
+        platform:
+          type: string
+        handle:
+          type: string
+        displayName:
+          type: string
+          nullable: true
+        profileUrl:
+          type: string
+          nullable: true
+        avatarUrl:
+          type: string
+          nullable: true
+        bio:
+          type: string
+          nullable: true
+        followerCount:
+          type: integer
+          nullable: true
+        isEstimated:
+          type: boolean
+        dataSource:
+          type: string
+          enum: [api, manual, csv_import, public_page]
+        lastSyncAt:
+          type: string
+          format: date-time
+          nullable: true
+        status:
+          type: string
+          enum: [active, limited, disconnected, error]
+      required:
+        - id
+        - platform
+        - handle
+        - isEstimated
+        - dataSource
+        - status
+
+    SocialMetricsSnapshot:
+      type: object
+      properties:
+        totalReach:
+          type: integer
+          nullable: true
+        isEstimated:
+          type: boolean
+        platforms:
+          type: array
+          items:
+            $ref: "#/components/schemas/PlatformMetric"
+        snapshotAt:
+          type: string
+          format: date-time
+      required:
+        - isEstimated
+        - platforms
+        - snapshotAt
+
+    PlatformMetric:
+      type: object
+      properties:
+        platform:
+          type: string
+        followers:
+          type: integer
+          nullable: true
+        isEstimated:
+          type: boolean
+        dataSource:
+          type: string
+        lastSyncAt:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+        - platform
+        - isEstimated
+        - dataSource
+
+    PaginatedCollaborations:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/CollaborationSummary"
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+      required:
+        - items
+        - total
+        - page
+        - limit
+
+    CollaborationSummary:
+      type: object
+      properties:
+        id:
+          type: string
+        senderName:
+          type: string
+        senderEmail:
+          type: string
+          nullable: true
+        subject:
+          type: string
+        status:
+          type: string
+          enum: [new, in_progress, accepted, rejected, archived]
+        budget:
+          type: string
+          nullable: true
+        deadline:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        hasUnreadNotes:
+          type: boolean
+      required:
+        - id
+        - senderName
+        - subject
+        - status
+        - createdAt
+        - hasUnreadNotes
+
+    CollaborationDetail:
+      type: object
+      properties:
+        id:
+          type: string
+        senderName:
+          type: string
+        senderEmail:
+          type: string
+          nullable: true
+        senderWallet:
+          type: string
+          nullable: true
+        subject:
+          type: string
+        description:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum: [new, in_progress, accepted, rejected, archived]
+        budget:
+          type: string
+          nullable: true
+        deadline:
+          type: string
+          format: date-time
+          nullable: true
+        deliverables:
+          type: array
+          items:
+            type: string
+        labels:
+          type: array
+          items:
+            type: string
+        notes:
+          type: array
+          items:
+            $ref: "#/components/schemas/CollaborationNote"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - senderName
+        - subject
+        - status
+        - deliverables
+        - labels
+        - notes
+        - createdAt
+        - updatedAt
+
+    CollaborationNote:
+      type: object
+      properties:
+        id:
+          type: string
+        content:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - content
+        - createdAt
+
+    UpdateCollaborationRequest:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [new, in_progress, accepted, rejected, archived]
+        note:
+          type: string
+        labels:
+          type: array
+          items:
+            type: string
+        deliverables:
+          type: array
+          items:
+            type: string
+        budget:
+          type: string
+        deadline:
+          type: string
+          format: date-time
+
+    SubmitCollaborationRequest:
+      type: object
+      properties:
+        creatorHandle:
+          type: string
+        senderName:
+          type: string
+        senderEmail:
+          type: string
+        senderWallet:
+          type: string
+        subject:
+          type: string
+        description:
+          type: string
+        budget:
+          type: string
+        deadline:
+          type: string
+          format: date-time
+        deliverables:
+          type: array
+          items:
+            type: string
+      required:
+        - creatorHandle
+        - senderName
+        - subject
+
+    CalendarEvent:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        startAt:
+          type: string
+          format: date-time
+        endAt:
+          type: string
+          format: date-time
+        description:
+          type: string
+          nullable: true
+        location:
+          type: string
+          nullable: true
+        isBooking:
+          type: boolean
+        calendarSource:
+          type: string
+          enum: [google_calendar, cal_com, manual]
+        attendees:
+          type: array
+          items:
+            type: string
+      required:
+        - id
+        - title
+        - startAt
+        - endAt
+        - isBooking
+        - calendarSource
+        - attendees
+
+    CalendarSummary:
+      type: object
+      properties:
+        nextEvent:
+          $ref: "#/components/schemas/CalendarEvent"
+          nullable: true
+        eventsThisWeek:
+          type: integer
+        bookingsThisMonth:
+          type: integer
+        calComLink:
+          type: string
+          nullable: true
+        lastSyncAt:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+        - eventsThisWeek
+        - bookingsThisMonth
+
+    PaymentRequest:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        amount:
+          type: string
+        currency:
+          type: string
+        toAddress:
+          type: string
+        fromAddress:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum: [pending, paid, cancelled, expired]
+        paymentLink:
+          type: string
+          nullable: true
+        serviceId:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        paidAt:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+        - id
+        - title
+        - amount
+        - currency
+        - toAddress
+        - status
+        - createdAt
+
+    CreatePaymentRequestInput:
+      type: object
+      properties:
+        title:
+          type: string
+        amount:
+          type: string
+        currency:
+          type: string
+        walletId:
+          type: string
+        serviceId:
+          type: string
+        notes:
+          type: string
+      required:
+        - title
+        - amount
+        - currency
+        - walletId
+
+    UpdatePaymentRequestInput:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [pending, paid, cancelled, expired]
+        fromAddress:
+          type: string
+        notes:
+          type: string
+
+    PaginatedPublicProfiles:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/PublicCreatorProfile"
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+      required:
+        - items
+        - total
+        - page
+        - limit
+
+    PaginatedSyncJobs:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/SyncJob"
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+      required:
+        - items
+        - total
+        - page
+        - limit
+
+    SyncJob:
+      type: object
+      properties:
+        id:
+          type: string
+        provider:
+          type: string
+        jobType:
+          type: string
+        status:
+          type: string
+          enum: [queued, running, completed, failed, dead_letter]
+        startedAt:
+          type: string
+          format: date-time
+          nullable: true
+        completedAt:
+          type: string
+          format: date-time
+          nullable: true
+        errorMessage:
+          type: string
+          nullable: true
+        retryCount:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - provider
+        - jobType
+        - status
+        - retryCount
+        - createdAt
+
+    PaginatedUsers:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/User"
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+      required:
+        - items
+        - total
+        - page
+        - limit
+
+    SyncHealthOverview:
+      type: object
+      properties:
+        totalJobs:
+          type: integer
+        failedJobs:
+          type: integer
+        deadLetterJobs:
+          type: integer
+        avgJobDurationMs:
+          type: integer
+        providerHealth:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProviderHealth"
+      required:
+        - totalJobs
+        - failedJobs
+        - deadLetterJobs
+        - avgJobDurationMs
+        - providerHealth
+
+    ProviderHealth:
+      type: object
+      properties:
+        provider:
+          type: string
+        successRate:
+          type: number
+        lastSuccess:
+          type: string
+          format: date-time
+          nullable: true
+        activeConnections:
+          type: integer
+      required:
+        - provider
+        - successRate
+        - activeConnections
+
+    AdminIntegrationRecord:
+      type: object
+      properties:
+        userId:
+          type: string
+        userEmail:
+          type: string
+        provider:
+          type: string
+        status:
+          type: string
+        lastSyncAt:
+          type: string
+          format: date-time
+          nullable: true
+        errorMessage:
+          type: string
+          nullable: true
+      required:
+        - userId
+        - userEmail
+        - provider
+        - status
