@@ -9,7 +9,7 @@ import {
   Wallet, 
   UserCircle, 
   LogOut,
-  Sparkles,
+  Zap,
   ShieldAlert,
   Menu,
   X
@@ -32,8 +32,10 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-accent animate-pulse" />
-          <p className="text-muted-foreground font-medium animate-pulse">Initializing OS...</p>
+          <div className="w-12 h-12 rounded bg-primary flex items-center justify-center">
+            <Zap className="w-6 h-6 text-white" />
+          </div>
+          <p className="text-muted-foreground font-medium text-sm">Initializing OS...</p>
         </div>
       </div>
     );
@@ -54,30 +56,30 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
   const NavContent = () => (
     <div className="flex flex-col h-full">
-      <div className="p-6">
-        <Link href="/dashboard" className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg shadow-primary/20">
-            <Sparkles className="w-5 h-5 text-white" />
+      <div className="px-6 py-5 border-b border-sidebar-border">
+        <Link href="/dashboard" className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded bg-primary flex items-center justify-center">
+            <Zap className="w-4 h-4 text-white" />
           </div>
-          <span className="font-display font-bold text-2xl tracking-tight text-foreground">
+          <span className="font-display font-black text-lg uppercase tracking-tight text-foreground">
             Kreatorboard
           </span>
         </Link>
       </div>
 
-      <nav className="flex-1 px-4 space-y-2 overflow-y-auto">
+      <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
         {navItems.map((item) => {
           const isActive = location === item.path || (item.path !== "/dashboard" && location.startsWith(item.path));
           return (
             <Link key={item.path} href={item.path}>
               <div className={`
-                flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200 cursor-pointer
+                flex items-center gap-3 px-3 py-2.5 rounded font-medium transition-all duration-150 cursor-pointer text-sm
                 ${isActive 
-                  ? "bg-primary/10 text-primary glow-border shadow-inner" 
-                  : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                  ? "bg-primary/12 text-primary border border-primary/20" 
+                  : "text-muted-foreground hover:bg-secondary hover:text-foreground border border-transparent"
                 }
               `}>
-                <item.icon className={`w-5 h-5 ${isActive ? "text-primary" : ""}`} />
+                <item.icon className={`w-4 h-4 flex-shrink-0 ${isActive ? "text-primary" : ""}`} />
                 {item.name}
               </div>
             </Link>
@@ -85,13 +87,13 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         })}
       </nav>
 
-      <div className="p-4 mt-auto">
-        <div className="glass-card rounded-2xl p-4 flex flex-col gap-4">
+      <div className="p-4 mt-auto border-t border-sidebar-border">
+        <div className="editorial-card rounded p-3 flex flex-col gap-3">
           <div className="flex items-center gap-3">
             <img 
               src={user.avatarUrl || `${import.meta.env.BASE_URL}images/avatar-placeholder.png`} 
               alt={user.name || "User"} 
-              className="w-10 h-10 rounded-full bg-secondary object-cover border border-border"
+              className="w-9 h-9 rounded bg-secondary object-cover border border-border"
             />
             <div className="flex flex-col overflow-hidden">
               <span className="text-sm font-semibold truncate">{user.name || "Creator"}</span>
@@ -101,10 +103,10 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           <Button 
             variant="outline" 
             size="sm" 
-            className="w-full justify-start text-muted-foreground hover:text-destructive hover:bg-destructive/10 hover:border-destructive/20 transition-colors"
+            className="w-full justify-start text-muted-foreground hover:text-destructive hover:bg-destructive/10 hover:border-destructive/20 transition-colors rounded text-xs"
             onClick={logout}
           >
-            <LogOut className="w-4 h-4 mr-2" />
+            <LogOut className="w-3.5 h-3.5 mr-2" />
             Sign Out
           </Button>
         </div>
@@ -115,40 +117,40 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
     <div className="min-h-screen bg-background text-foreground flex">
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:block w-72 bg-sidebar border-r border-sidebar-border h-screen sticky top-0">
+      <aside className="hidden lg:block w-64 bg-sidebar border-r border-sidebar-border h-screen sticky top-0">
         <NavContent />
       </aside>
 
       {/* Mobile Header & Sidebar */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 h-16 glass-panel border-b z-50 flex items-center justify-between px-4">
+      <div className="lg:hidden fixed top-0 left-0 right-0 h-14 bg-background/95 backdrop-blur-md border-b border-border z-50 flex items-center justify-between px-4">
         <Link href="/dashboard" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-            <Sparkles className="w-4 h-4 text-white" />
+          <div className="w-7 h-7 rounded bg-primary flex items-center justify-center">
+            <Zap className="w-3.5 h-3.5 text-white" />
           </div>
-          <span className="font-display font-bold text-xl">Kreatorboard</span>
+          <span className="font-display font-black text-lg uppercase tracking-tight">Kreatorboard</span>
         </Link>
         <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
           <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="text-muted-foreground">
-              <Menu className="w-6 h-6" />
+            <Button variant="ghost" size="icon" className="text-muted-foreground w-9 h-9">
+              <Menu className="w-5 h-5" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-72 p-0 bg-sidebar border-r-sidebar-border">
+          <SheetContent side="left" className="w-64 p-0 bg-sidebar border-r border-sidebar-border">
             <NavContent />
           </SheetContent>
         </Sheet>
       </div>
 
       {/* Main Content */}
-      <main className="flex-1 min-w-0 flex flex-col pt-16 lg:pt-0">
+      <main className="flex-1 min-w-0 flex flex-col pt-14 lg:pt-0">
         <AnimatePresence mode="wait">
           <motion.div
             key={location}
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-            className="flex-1 p-4 sm:p-6 lg:p-10 max-w-7xl mx-auto w-full"
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.18 }}
+            className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full"
           >
             {children}
           </motion.div>

@@ -9,34 +9,47 @@ import {
 import { Link } from "wouter";
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
+  hidden: { opacity: 0, y: 20 },
   visible: (i = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.55, delay: i * 0.1, ease: "easeOut" }
+    transition: { duration: 0.5, delay: i * 0.08, ease: "easeOut" }
   })
 };
 
 function DashboardMockup() {
   return (
-    <div className="w-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-black/60" style={{ background: "hsl(226 45% 5%)" }}>
-      <div className="flex items-center gap-1.5 px-4 py-3 border-b border-white/5" style={{ background: "hsl(226 45% 6%)" }}>
-        <div className="w-2.5 h-2.5 rounded-full bg-red-500/70" />
-        <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/70" />
-        <div className="w-2.5 h-2.5 rounded-full bg-green-500/70" />
+    <div
+      className="w-full rounded-lg overflow-hidden border border-card-border shadow-2xl shadow-black/60"
+      style={{ background: "hsl(var(--card))" }}
+    >
+      <div
+        className="flex items-center gap-1.5 px-4 py-3 border-b border-card-border"
+        style={{ background: "hsl(var(--background))" }}
+      >
+        <div className="w-2.5 h-2.5 rounded-full bg-red-500/60" />
+        <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/60" />
+        <div className="w-2.5 h-2.5 rounded-full bg-green-500/60" />
         <div className="ml-3 flex-1 h-4 rounded bg-white/5 text-[10px] text-muted-foreground flex items-center px-2">
           kreatorboard.app/dashboard
         </div>
       </div>
 
       <div className="flex" style={{ minHeight: 280 }}>
-        <div className="w-40 border-r border-white/5 p-3 flex flex-col gap-1" style={{ background: "hsl(226 45% 5%)" }}>
+        <div
+          className="w-40 border-r border-card-border p-3 flex flex-col gap-1"
+          style={{ background: "hsl(var(--background))" }}
+        >
           {["Overview", "Integrations", "Inbox", "Calendar", "Payments", "Profile"].map((item, i) => (
             <div
               key={item}
-              className={`flex items-center gap-2 px-2 py-1.5 rounded-lg text-xs ${i === 0 ? "bg-primary/20 text-primary font-semibold" : "text-muted-foreground hover:text-foreground"}`}
+              className={`flex items-center gap-2 px-2 py-1.5 rounded text-xs ${
+                i === 0
+                  ? "bg-primary/15 text-primary font-semibold"
+                  : "text-muted-foreground"
+              }`}
             >
-              <div className="w-3 h-3 rounded-sm bg-current opacity-60" />
+              <div className="w-3 h-3 rounded-sm bg-current opacity-50" />
               {item}
             </div>
           ))}
@@ -49,24 +62,28 @@ function DashboardMockup() {
             {[
               { label: "Total Reach", value: "48.2K", color: "text-primary", badge: "API" },
               { label: "Pending Payments", value: "2,400 USDC", color: "text-green-400", badge: "Live" },
-              { label: "Inbox Requests", value: "3 new", color: "text-accent", badge: "Live" },
+              { label: "Inbox Requests", value: "3 new", color: "text-amber-400", badge: "Live" },
               { label: "Events This Week", value: "5", color: "text-yellow-400", badge: "Synced" },
             ].map((stat) => (
-              <div key={stat.label} className="rounded-xl p-2.5 border border-white/5" style={{ background: "hsl(226 45% 7%)" }}>
+              <div
+                key={stat.label}
+                className="rounded p-2.5 border border-card-border"
+                style={{ background: "hsl(var(--secondary))" }}
+              >
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-[9px] text-muted-foreground">{stat.label}</span>
-                  <span className="text-[8px] px-1 rounded bg-white/5 text-muted-foreground">{stat.badge}</span>
+                  <span className="text-[8px] px-1 rounded border border-card-border text-muted-foreground">{stat.badge}</span>
                 </div>
                 <div className={`text-sm font-bold ${stat.color}`}>{stat.value}</div>
               </div>
             ))}
           </div>
 
-          <div className="rounded-xl p-2.5 border border-white/5" style={{ background: "hsl(226 45% 7%)" }}>
+          <div className="rounded p-2.5 border border-card-border" style={{ background: "hsl(var(--secondary))" }}>
             <div className="text-[9px] text-muted-foreground mb-2">Connected Integrations</div>
             <div className="flex gap-1.5 flex-wrap">
               {["Gmail", "Discord", "X", "Wallet", "Cal.com"].map((int) => (
-                <span key={int} className="text-[8px] px-1.5 py-0.5 rounded-full bg-primary/15 text-primary border border-primary/20">
+                <span key={int} className="text-[8px] px-1.5 py-0.5 rounded border border-primary/25 bg-primary/10 text-primary">
                   ✓ {int}
                 </span>
               ))}
@@ -85,15 +102,15 @@ function InboxMockup() {
     { name: "Arbitrum DAO", msg: "Content creation for ecosystem growth", status: "new", time: "3h ago", amount: "8,000 USDC" },
   ];
   return (
-    <div className="rounded-2xl overflow-hidden border border-white/10" style={{ background: "hsl(226 45% 5%)" }}>
-      <div className="px-4 py-3 border-b border-white/5 flex items-center justify-between">
+    <div className="rounded-lg overflow-hidden border border-card-border" style={{ background: "hsl(var(--card))" }}>
+      <div className="px-4 py-3 border-b border-card-border flex items-center justify-between">
         <span className="text-xs font-semibold">Collaboration Inbox</span>
-        <span className="text-[10px] bg-primary/20 text-primary px-2 py-0.5 rounded-full">2 new</span>
+        <span className="text-[10px] border border-primary/30 bg-primary/10 text-primary px-2 py-0.5 rounded">2 new</span>
       </div>
-      <div className="divide-y divide-white/5">
+      <div className="divide-y divide-card-border">
         {items.map((item) => (
-          <div key={item.name} className="px-4 py-3 flex items-start gap-3 hover:bg-white/2">
-            <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary flex-shrink-0">
+          <div key={item.name} className="px-4 py-3 flex items-start gap-3">
+            <div className="w-7 h-7 rounded bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary flex-shrink-0">
               {item.name[0]}
             </div>
             <div className="flex-1 min-w-0">
@@ -103,7 +120,7 @@ function InboxMockup() {
               </div>
               <p className="text-[10px] text-muted-foreground truncate">{item.msg}</p>
               <div className="flex items-center gap-2 mt-1">
-                <span className={`text-[9px] px-1.5 py-0.5 rounded-full ${item.status === "new" ? "bg-accent/15 text-accent" : "bg-yellow-500/15 text-yellow-400"}`}>
+                <span className={`text-[9px] px-1.5 py-0.5 border rounded ${item.status === "new" ? "border-accent/40 bg-accent/10 text-accent" : "border-yellow-500/30 bg-yellow-500/10 text-yellow-400"}`}>
                   {item.status === "new" ? "New request" : "In progress"}
                 </span>
                 <span className="text-[9px] text-green-400 font-medium">{item.amount}</span>
@@ -118,27 +135,30 @@ function InboxMockup() {
 
 function PaymentsMockup() {
   return (
-    <div className="rounded-2xl overflow-hidden border border-white/10" style={{ background: "hsl(226 45% 5%)" }}>
-      <div className="px-4 py-3 border-b border-white/5 flex items-center justify-between">
+    <div className="rounded-lg overflow-hidden border border-card-border" style={{ background: "hsl(var(--card))" }}>
+      <div className="px-4 py-3 border-b border-card-border flex items-center justify-between">
         <span className="text-xs font-semibold">Payments</span>
         <span className="text-[10px] text-muted-foreground">On-chain</span>
       </div>
       <div className="p-4 space-y-3">
-        <div className="flex items-center gap-3 p-3 rounded-xl border border-white/5" style={{ background: "hsl(226 45% 7%)" }}>
-          <div className="w-8 h-8 rounded-full bg-green-500/10 flex items-center justify-center">
+        <div
+          className="flex items-center gap-3 p-3 rounded border border-card-border"
+          style={{ background: "hsl(var(--secondary))" }}
+        >
+          <div className="w-8 h-8 rounded bg-green-500/10 flex items-center justify-center">
             <Wallet className="w-4 h-4 text-green-400" />
           </div>
           <div className="flex-1">
             <p className="text-xs font-medium">0x3f...a2b9</p>
             <p className="text-[10px] text-muted-foreground">Polygon · Verified via SIWE</p>
           </div>
-          <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-green-500/10 text-green-400 border border-green-500/20">Connected</span>
+          <span className="text-[9px] px-1.5 py-0.5 rounded border border-green-500/25 bg-green-500/10 text-green-400">Connected</span>
         </div>
         {[
           { project: "Nexus Protocol", amount: "+5,000 USDC", status: "Pending" },
           { project: "LayerZero", amount: "+2,500 USDC", status: "Paid" },
         ].map((p) => (
-          <div key={p.project} className="flex items-center justify-between p-2.5 rounded-lg border border-white/5">
+          <div key={p.project} className="flex items-center justify-between p-2.5 rounded border border-card-border">
             <div>
               <p className="text-[11px] font-medium">{p.project}</p>
               <p className={`text-[10px] ${p.status === "Paid" ? "text-green-400" : "text-yellow-400"}`}>{p.status}</p>
@@ -169,12 +189,6 @@ export default function Landing() {
     <div className="min-h-screen bg-background relative overflow-x-hidden">
       <PublicNavbar />
 
-      <div className="fixed top-0 left-0 w-full h-full pointer-events-none -z-10 overflow-hidden">
-        <div className="absolute top-[-15%] left-[-10%] w-[50%] h-[50%] bg-primary/15 blur-[150px] rounded-full" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-accent/10 blur-[120px] rounded-full" />
-        <div className="absolute top-[40%] left-[50%] w-[30%] h-[30%] bg-primary/8 blur-[100px] rounded-full" />
-      </div>
-
       {/* ── HERO ── */}
       <section className="pt-36 pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="flex flex-col lg:flex-row items-center gap-16">
@@ -182,79 +196,85 @@ export default function Landing() {
             initial="hidden"
             animate="visible"
             variants={fadeUp}
-            className="flex-1 text-center lg:text-left z-10 max-w-2xl mx-auto lg:mx-0"
+            className="flex-1 z-10 max-w-2xl mx-auto lg:mx-0"
           >
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-card mb-8 border border-primary/25 text-sm">
-              <Zap className="w-3.5 h-3.5 text-accent" />
-              <span className="font-medium text-sm">The Creator OS for Web3</span>
-            </div>
+            {/* Editorial section label */}
+            <p className="section-label mb-5">// The Creator OS for Web3</p>
 
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-display font-extrabold tracking-tight mb-6 leading-[1.08]">
-              Your entire creator<br />
-              business,{" "}
-              <span className="glow-text">on-chain.</span>
+            {/* Massive condensed headline */}
+            <h1
+              className="font-display font-black uppercase leading-[0.95] mb-8 tracking-tight"
+              style={{ fontSize: "clamp(3.2rem, 8vw, 5.5rem)" }}
+            >
+              Your entire<br />
+              creator business,<br />
+              <span className="accent-highlight">on-chain.</span>
             </h1>
 
-            <p className="text-lg sm:text-xl text-muted-foreground mb-10 leading-relaxed">
+            <p className="text-base sm:text-lg text-muted-foreground mb-10 leading-relaxed max-w-lg">
               Connect your socials, manage collabs, accept crypto payments, and launch a public profile — all from one automated dashboard.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center gap-3 justify-center lg:justify-start">
+            <div className="flex flex-col sm:flex-row items-start gap-3">
               <Button
                 size="lg"
                 onClick={goToSignIn}
-                className="w-full sm:w-auto h-13 px-7 text-base font-semibold bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-[0_0_30px_rgba(123,97,255,0.35)] hover:shadow-[0_0_45px_rgba(123,97,255,0.5)] transition-all rounded-xl"
+                className="h-12 px-7 text-base font-semibold bg-primary hover:bg-primary/90 shadow-[0_0_24px_rgba(107,82,240,0.3)] hover:shadow-[0_0_36px_rgba(107,82,240,0.45)] transition-all rounded"
               >
                 Claim Your Profile <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
               <Link href="/discover">
-                <Button size="lg" variant="outline" className="w-full sm:w-auto h-13 px-7 text-base font-semibold rounded-xl glass-card hover:bg-white/5 border-white/10">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="h-12 px-7 text-base font-semibold rounded border-border hover:bg-secondary/80 text-foreground"
+                >
                   Explore Creators
                 </Button>
               </Link>
             </div>
 
-            <div className="mt-10 flex items-center gap-5 justify-center lg:justify-start text-sm text-muted-foreground">
-              <div className="flex items-center gap-1.5"><CheckCircle className="w-4 h-4 text-green-400" /> No platform fees</div>
-              <div className="flex items-center gap-1.5"><CheckCircle className="w-4 h-4 text-green-400" /> Real metrics only</div>
-              <div className="flex items-center gap-1.5"><CheckCircle className="w-4 h-4 text-green-400" /> Free to start</div>
+            <div className="mt-8 flex items-center gap-5 text-sm text-muted-foreground">
+              <div className="flex items-center gap-1.5"><CheckCircle className="w-3.5 h-3.5 text-green-400" /> No platform fees</div>
+              <div className="flex items-center gap-1.5"><CheckCircle className="w-3.5 h-3.5 text-green-400" /> Real metrics only</div>
+              <div className="flex items-center gap-1.5"><CheckCircle className="w-3.5 h-3.5 text-green-400" /> Free to start</div>
             </div>
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, scale: 0.92, y: 20 }}
+            initial={{ opacity: 0, scale: 0.94, y: 16 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.15, ease: "easeOut" }}
+            transition={{ duration: 0.7, delay: 0.12, ease: "easeOut" }}
             className="flex-1 relative w-full max-w-2xl"
           >
-            <div className="glow-border rounded-2xl">
-              <DashboardMockup />
-            </div>
+            <DashboardMockup />
 
+            {/* Floating badge — payment */}
             <motion.div
-              animate={{ y: [-8, 8, -8] }}
+              animate={{ y: [-6, 6, -6] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -top-5 -right-4 glass-card p-3 rounded-2xl flex items-center gap-3 border border-green-500/20 shadow-lg shadow-green-500/5"
+              className="absolute -top-4 -right-4 editorial-card p-3 rounded flex items-center gap-3 border-green-500/20"
             >
-              <div className="w-8 h-8 rounded-full bg-green-500/15 flex items-center justify-center">
-                <Wallet className="w-4 h-4 text-green-400" />
+              <div className="w-7 h-7 rounded bg-green-500/10 flex items-center justify-center">
+                <Wallet className="w-3.5 h-3.5 text-green-400" />
               </div>
               <div>
-                <p className="text-[10px] text-muted-foreground">Payment Received</p>
+                <p className="text-[9px] text-muted-foreground">Payment Received</p>
                 <p className="text-sm font-bold text-green-400">+500 USDC</p>
               </div>
             </motion.div>
 
+            {/* Floating badge — collab */}
             <motion.div
-              animate={{ y: [8, -8, 8] }}
+              animate={{ y: [6, -6, 6] }}
               transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-              className="absolute -bottom-4 -left-4 glass-card p-3 rounded-2xl flex items-center gap-3 border border-primary/20 shadow-lg shadow-primary/5"
+              className="absolute -bottom-4 -left-4 editorial-card p-3 rounded flex items-center gap-3 border-primary/20"
             >
-              <div className="w-8 h-8 rounded-full bg-primary/15 flex items-center justify-center">
-                <Inbox className="w-4 h-4 text-primary" />
+              <div className="w-7 h-7 rounded bg-primary/10 flex items-center justify-center">
+                <Inbox className="w-3.5 h-3.5 text-primary" />
               </div>
               <div>
-                <p className="text-[10px] text-muted-foreground">New collab request</p>
+                <p className="text-[9px] text-muted-foreground">New collab request</p>
                 <p className="text-sm font-bold text-foreground">Nexus Protocol</p>
               </div>
             </motion.div>
@@ -263,9 +283,9 @@ export default function Landing() {
       </section>
 
       {/* ── STATS BAR ── */}
-      <section className="py-10 px-4 sm:px-6 lg:px-8 border-y border-white/5" style={{ background: "hsl(226 45% 6%)" }}>
+      <section className="py-10 px-4 sm:px-6 lg:px-8 border-y border-border" style={{ background: "hsl(var(--card))" }}>
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
               { value: "8", label: "Integrations supported", icon: Link2 },
               { value: "0%", label: "Platform fees, ever", icon: Shield },
@@ -281,11 +301,11 @@ export default function Landing() {
                 variants={fadeUp}
                 className="flex items-center gap-4"
               >
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                  <stat.icon className="w-5 h-5 text-primary" />
+                <div className="w-9 h-9 rounded border border-primary/25 bg-primary/8 flex items-center justify-center flex-shrink-0">
+                  <stat.icon className="w-4 h-4 text-primary" />
                 </div>
                 <div>
-                  <div className="text-2xl font-display font-extrabold text-foreground">{stat.value}</div>
+                  <div className="font-display font-black text-2xl text-foreground leading-none mb-0.5">{stat.value}</div>
                   <div className="text-xs text-muted-foreground">{stat.label}</div>
                 </div>
               </motion.div>
@@ -301,21 +321,20 @@ export default function Landing() {
           whileInView="visible"
           viewport={{ once: true }}
           variants={fadeUp}
-          className="text-center mb-20"
+          className="mb-20"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-card border border-white/10 text-sm text-muted-foreground mb-5">
-            How it works
-          </div>
-          <h2 className="text-4xl sm:text-5xl font-display font-extrabold tracking-tight mb-5">
-            Set up in minutes,<br />run on autopilot.
+          <p className="section-label mb-4">// How it works</p>
+          <h2 className="font-display font-black uppercase leading-[0.95] mb-5" style={{ fontSize: "clamp(2.4rem, 5vw, 3.6rem)" }}>
+            Set up in minutes,<br />
+            <span className="accent-highlight">run on autopilot.</span>
           </h2>
-          <p className="text-lg text-muted-foreground max-w-xl mx-auto">
+          <p className="text-base text-muted-foreground max-w-xl">
             No manual data entry, no spreadsheets. Kreatorboard pulls everything together automatically.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
-          <div className="hidden md:block absolute top-16 left-[33%] right-[33%] h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 relative">
+          <div className="hidden md:block absolute top-16 left-[33%] right-[33%] h-px bg-gradient-to-r from-transparent via-border to-transparent" />
 
           {[
             {
@@ -323,21 +342,24 @@ export default function Landing() {
               icon: Link2,
               title: "Connect your socials & wallet",
               desc: "Link Gmail, Discord, X, Telegram, Cal.com and your crypto wallet. Takes under 5 minutes.",
-              color: "text-primary bg-primary/10",
+              accent: "text-primary",
+              bg: "bg-primary/8 border-primary/20",
             },
             {
               step: "02",
               icon: LayoutDashboard,
               title: "Your dashboard builds itself",
               desc: "Real metrics from every connected platform appear automatically. No fake data, ever.",
-              color: "text-accent bg-accent/10",
+              accent: "text-accent",
+              bg: "bg-accent/8 border-accent/20",
             },
             {
               step: "03",
               icon: TrendingUp,
               title: "Get discovered, get paid",
               desc: "Your public profile goes live. Brands find you, send collab requests, and pay on-chain.",
-              color: "text-green-400 bg-green-400/10",
+              accent: "text-green-400",
+              bg: "bg-green-400/8 border-green-400/20",
             },
           ].map((step, i) => (
             <motion.div
@@ -347,15 +369,15 @@ export default function Landing() {
               whileInView="visible"
               viewport={{ once: true }}
               variants={fadeUp}
-              className="glass-card p-8 rounded-3xl relative overflow-hidden group interactive-card"
+              className="editorial-card p-8 rounded relative overflow-hidden group interactive-card"
             >
-              <div className="absolute top-4 right-5 text-5xl font-display font-black text-white/3 select-none">
+              <div className="absolute top-5 right-6 font-display font-black text-6xl text-white/4 select-none leading-none">
                 {step.step}
               </div>
-              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-6 ${step.color}`}>
-                <step.icon className="w-6 h-6" />
+              <div className={`w-10 h-10 rounded border flex items-center justify-center mb-6 ${step.bg} ${step.accent}`}>
+                <step.icon className="w-5 h-5" />
               </div>
-              <h3 className="text-lg font-bold mb-3">{step.title}</h3>
+              <h3 className="font-sans text-base font-bold mb-3">{step.title}</h3>
               <p className="text-muted-foreground leading-relaxed text-sm">{step.desc}</p>
             </motion.div>
           ))}
@@ -369,43 +391,41 @@ export default function Landing() {
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           variants={fadeUp}
-          className="text-center mb-4"
+          className="mb-4"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-card border border-white/10 text-sm text-muted-foreground mb-5">
-            Features
-          </div>
-          <h2 className="text-4xl sm:text-5xl font-display font-extrabold tracking-tight">
-            Everything a creator needs.<br />Nothing they don't.
+          <p className="section-label mb-4">// Features</p>
+          <h2 className="font-display font-black uppercase leading-[0.95]" style={{ fontSize: "clamp(2.4rem, 5vw, 3.6rem)" }}>
+            Everything a creator needs.<br />
+            <span className="accent-highlight">Nothing they don't.</span>
           </h2>
         </motion.div>
 
         {/* Feature 1 — Inbox */}
         <div className="flex flex-col lg:flex-row items-center gap-16">
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
+            initial={{ opacity: 0, x: -24 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.55 }}
             className="flex-1"
           >
             <InboxMockup />
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, x: 30 }}
+            initial={{ opacity: 0, x: 24 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.6, delay: 0.1 }}
+            transition={{ duration: 0.55, delay: 0.1 }}
             className="flex-1 max-w-lg"
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-medium mb-6">
-              <Inbox className="w-3.5 h-3.5" />
-              Collaboration CRM
+            <div className="tag-sharp border-accent/50 text-accent mb-6 inline-block">
+              // Collaboration CRM
             </div>
-            <h3 className="text-3xl sm:text-4xl font-display font-extrabold mb-5">
+            <h3 className="font-display font-black uppercase leading-[0.95] mb-5" style={{ fontSize: "clamp(2rem, 4vw, 2.8rem)" }}>
               A collab inbox that actually works.
             </h3>
-            <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
+            <p className="text-base text-muted-foreground mb-8 leading-relaxed">
               All collaboration requests in one place. Track status, add notes, set budgets — and never lose a deal in your DMs again.
             </p>
             <ul className="space-y-3">
@@ -427,30 +447,29 @@ export default function Landing() {
         {/* Feature 2 — Payments */}
         <div className="flex flex-col lg:flex-row-reverse items-center gap-16">
           <motion.div
-            initial={{ opacity: 0, x: 30 }}
+            initial={{ opacity: 0, x: 24 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.55 }}
             className="flex-1"
           >
             <PaymentsMockup />
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
+            initial={{ opacity: 0, x: -24 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.6, delay: 0.1 }}
+            transition={{ duration: 0.55, delay: 0.1 }}
             className="flex-1 max-w-lg"
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-medium mb-6">
-              <CreditCard className="w-3.5 h-3.5" />
-              Crypto Payments
+            <div className="tag-sharp border-green-500/40 text-green-400 mb-6 inline-block">
+              // Crypto Payments
             </div>
-            <h3 className="text-3xl sm:text-4xl font-display font-extrabold mb-5">
+            <h3 className="font-display font-black uppercase leading-[0.95] mb-5" style={{ fontSize: "clamp(2rem, 4vw, 2.8rem)" }}>
               Crypto-native payments, built in.
             </h3>
-            <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
+            <p className="text-base text-muted-foreground mb-8 leading-relaxed">
               Connect your wallet with one click. Generate shareable payment request links for brands. Get paid in USDC or ETH — directly to your wallet.
             </p>
             <ul className="space-y-3">
@@ -472,24 +491,24 @@ export default function Landing() {
         {/* Feature 3 — Public Profile */}
         <div className="flex flex-col lg:flex-row items-center gap-16">
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
+            initial={{ opacity: 0, x: -24 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.55 }}
             className="flex-1"
           >
-            <div className="rounded-2xl overflow-hidden border border-white/10 p-6" style={{ background: "hsl(226 45% 5%)" }}>
+            <div className="rounded-lg overflow-hidden border border-card-border p-6" style={{ background: "hsl(var(--card))" }}>
               <div className="flex items-start gap-4 mb-6">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center text-2xl font-bold text-white">
+                <div className="w-14 h-14 rounded bg-primary flex items-center justify-center text-xl font-bold text-white">
                   K
                 </div>
                 <div>
-                  <h4 className="text-lg font-bold">@kreatorxyz</h4>
+                  <h4 className="font-sans text-base font-bold">@kreatorxyz</h4>
                   <p className="text-sm text-muted-foreground">Web3 Content Creator · Ethereum Ecosystem</p>
                   <div className="flex items-center gap-2 mt-1.5">
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/15 text-primary border border-primary/20">DeFi</span>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-accent/15 text-accent border border-accent/20">NFTs</span>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/5 border border-white/10">Layer 2</span>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded border border-primary/25 bg-primary/10 text-primary">DeFi</span>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded border border-accent/25 bg-accent/10 text-accent">NFTs</span>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded border border-border text-muted-foreground">Layer 2</span>
                   </div>
                 </div>
               </div>
@@ -500,19 +519,23 @@ export default function Landing() {
                   { label: "Avg Views", value: "12.4K", src: "Estimated" },
                   { label: "Discord", value: "3.1K", src: "Discord API" },
                 ].map((m) => (
-                  <div key={m.label} className="rounded-xl p-3 border border-white/5 text-center" style={{ background: "hsl(226 45% 7%)" }}>
+                  <div
+                    key={m.label}
+                    className="rounded border border-card-border p-3 text-center"
+                    style={{ background: "hsl(var(--secondary))" }}
+                  >
                     <div className="text-base font-bold mb-0.5">{m.value}</div>
                     <div className="text-[9px] text-muted-foreground">{m.label}</div>
-                    <div className="text-[8px] mt-1 px-1.5 py-0.5 rounded bg-white/5 text-muted-foreground inline-block">{m.src}</div>
+                    <div className="text-[8px] mt-1 px-1 py-0.5 rounded border border-card-border text-muted-foreground inline-block">{m.src}</div>
                   </div>
                 ))}
               </div>
 
               <div className="flex gap-2">
-                <button className="flex-1 h-9 rounded-xl bg-gradient-to-r from-primary to-accent text-white text-xs font-semibold">
+                <button className="flex-1 h-9 rounded bg-primary text-white text-xs font-semibold hover:bg-primary/90 transition-colors">
                   Send Collab Request
                 </button>
-                <button className="h-9 px-3 rounded-xl border border-white/10 glass-card text-xs text-muted-foreground">
+                <button className="h-9 px-3 rounded border border-border text-xs text-muted-foreground hover:bg-secondary transition-colors">
                   Pay Now
                 </button>
               </div>
@@ -520,21 +543,20 @@ export default function Landing() {
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, x: 30 }}
+            initial={{ opacity: 0, x: 24 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.6, delay: 0.1 }}
+            transition={{ duration: 0.55, delay: 0.1 }}
             className="flex-1 max-w-lg"
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-medium mb-6">
-              <Globe className="w-3.5 h-3.5" />
-              Public Creator Profile
+            <div className="tag-sharp border-primary/40 text-primary mb-6 inline-block">
+              // Public Creator Profile
             </div>
-            <h3 className="text-3xl sm:text-4xl font-display font-extrabold mb-5">
+            <h3 className="font-display font-black uppercase leading-[0.95] mb-5" style={{ fontSize: "clamp(2rem, 4vw, 2.8rem)" }}>
               Your creator media kit, automated.
             </h3>
-            <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-              A stunning public profile at <code className="text-primary text-sm">kreatorboard.app/c/yourhandle</code> — with live metrics, portfolio, services, and a direct collaboration form.
+            <p className="text-base text-muted-foreground mb-8 leading-relaxed">
+              A stunning public profile at <code className="text-primary text-sm font-mono">kreatorboard.app/c/yourhandle</code> — with live metrics, portfolio, services, and a direct collaboration form.
             </p>
             <ul className="space-y-3">
               {[
@@ -554,19 +576,20 @@ export default function Landing() {
       </section>
 
       {/* ── INTEGRATIONS ── */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 border-y border-white/5" style={{ background: "hsl(226 45% 5%)" }}>
+      <section className="py-20 px-4 sm:px-6 lg:px-8 border-y border-border" style={{ background: "hsl(var(--card))" }}>
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             variants={fadeUp}
-            className="text-center mb-12"
+            className="mb-12"
           >
-            <h2 className="text-2xl font-display font-bold mb-3">
-              All your tools. One dashboard.
+            <p className="section-label mb-4">// Integrations</p>
+            <h2 className="font-display font-black uppercase leading-[0.95]" style={{ fontSize: "clamp(2rem, 4vw, 2.8rem)" }}>
+              All your tools.<br /><span className="accent-highlight">One dashboard.</span>
             </h2>
-            <p className="text-muted-foreground">Connect every platform in your creator stack.</p>
+            <p className="text-muted-foreground mt-3">Connect every platform in your creator stack.</p>
           </motion.div>
 
           <motion.div
@@ -574,14 +597,14 @@ export default function Landing() {
             whileInView="visible"
             viewport={{ once: true }}
             variants={fadeUp}
-            className="grid grid-cols-4 md:grid-cols-8 gap-4"
+            className="grid grid-cols-4 md:grid-cols-8 gap-3"
           >
             {integrations.map((int, i) => (
               <motion.div
                 key={int.name}
                 custom={i}
                 variants={fadeUp}
-                className="glass-card rounded-2xl p-4 flex flex-col items-center gap-2 interactive-card group cursor-default"
+                className="editorial-card rounded p-4 flex flex-col items-center gap-2 interactive-card group cursor-default"
               >
                 <div className="text-2xl leading-none">{int.icon}</div>
                 <span className="text-[10px] text-muted-foreground text-center font-medium group-hover:text-foreground transition-colors">{int.name}</span>
@@ -593,10 +616,6 @@ export default function Landing() {
 
       {/* ── CTA ── */}
       <section className="py-32 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-[600px] h-[600px] bg-primary/10 blur-[120px] rounded-full" />
-        </div>
-
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -604,30 +623,31 @@ export default function Landing() {
           variants={fadeUp}
           className="max-w-3xl mx-auto text-center relative z-10"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-card border border-primary/25 text-sm text-muted-foreground mb-8">
-            <Star className="w-3.5 h-3.5 text-accent" />
-            Built for the next generation of creators
-          </div>
+          <p className="section-label mb-6 text-center">// Built for the next generation of creators</p>
 
-          <h2 className="text-5xl sm:text-6xl font-display font-extrabold tracking-tight mb-6">
+          <h2 className="font-display font-black uppercase leading-[0.95] mb-6" style={{ fontSize: "clamp(2.8rem, 7vw, 5rem)" }}>
             Ready to build your<br />
-            <span className="glow-text">creator OS?</span>
+            <span className="accent-highlight">creator OS?</span>
           </h2>
 
-          <p className="text-xl text-muted-foreground mb-10">
-            Join web3 creators who are automating their business, getting discovered, and getting paid on-chain.
+          <p className="text-lg text-muted-foreground mb-10 max-w-xl mx-auto">
+            Join web3 creators automating their business, getting discovered, and getting paid on-chain.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center gap-4 justify-center">
             <Button
               size="lg"
               onClick={goToSignIn}
-              className="w-full sm:w-auto h-14 px-8 text-lg font-semibold bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-[0_0_40px_rgba(123,97,255,0.4)] hover:shadow-[0_0_60px_rgba(123,97,255,0.55)] transition-all rounded-xl"
+              className="w-full sm:w-auto h-12 px-8 text-base font-semibold bg-primary hover:bg-primary/90 shadow-[0_0_24px_rgba(107,82,240,0.3)] hover:shadow-[0_0_36px_rgba(107,82,240,0.45)] transition-all rounded"
             >
-              Claim Your Profile — It's Free <ArrowRight className="ml-2 w-5 h-5" />
+              Claim Your Profile — It's Free <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
             <Link href="/discover">
-              <Button size="lg" variant="outline" className="w-full sm:w-auto h-14 px-8 text-lg font-semibold rounded-xl glass-card hover:bg-white/5 border-white/10">
+              <Button
+                size="lg"
+                variant="outline"
+                className="w-full sm:w-auto h-12 px-8 text-base font-semibold rounded border-border hover:bg-secondary/80"
+              >
                 Browse Creators <ChevronRight className="ml-1 w-4 h-4" />
               </Button>
             </Link>
@@ -636,13 +656,13 @@ export default function Landing() {
       </section>
 
       {/* ── FOOTER ── */}
-      <footer className="border-t border-white/5 py-10 px-4 sm:px-6 lg:px-8">
+      <footer className="border-t border-border py-10 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+            <div className="w-7 h-7 rounded bg-primary flex items-center justify-center">
               <Zap className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="font-display font-bold text-foreground">Kreatorboard</span>
+            <span className="font-display font-bold text-lg uppercase tracking-tight text-foreground">Kreatorboard</span>
           </div>
           <p className="text-sm text-muted-foreground">
             The creator OS for web3. All metrics are sourced from real integrations — no fabricated data.
